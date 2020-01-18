@@ -26,6 +26,17 @@ function init() {
     // now we set the position of the camera, and it takes (x, y, and z) arguments, you need to play around with the arguments in order to achieve different effects
     camera.position.set(0, 3, 20);
 
+    // set a variable for the ambient light
+    // the 1 --> How much light do you want?
+    const ambient = new THREE.AmbientLight(0x404040, 2)
+    // add the ambient light to the scene
+    scene.add(ambient);
+
+    // setting directional light to a variable
+    const light = new THREE.DirectionalLight(0xffffff, 2);
+    light.position.set(50, 50, 100);
+    scene.add(light);
+
     // RENDERER
     // antialias adds blur/opacity to the pixel edges so that the final rendered image looks smooth (especially when zoomed in)
     // setting alpha to true lets us set any background we want 
@@ -44,11 +55,26 @@ function init() {
     // loading the model, use the path inside of the 3D directory and write a function to load the arguments defined above
     loader.load('./3d/scene.gltf', function(gltf){
         scene.add(gltf.scene);
-        renderer.render(scene, camera);
+        house = gltf.scene.children[0];
+        animate();
     })
     
+}
 
+function animate() {
+    requestAnimationFrame(animate);
+    house.rotation.z += 0.01;
+    renderer.render(scene, camera);
 }
 
 init()
-console.log(init());
+// console.log(init());
+
+function onWindowResize(){
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectMatrix();
+
+    renderer.setSize(container.clientWidth, container.clientHeight);
+}
+
+window.addEventListener("resize", onWindowResize);
